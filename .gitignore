@@ -1,4 +1,4 @@
-FitJournal/
-node_modules
+**/node_modules
 migrations
 **/management
+/FitJournal

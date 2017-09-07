@@ -1,0 +1,60 @@
+#bgWrap {
+  height: 70vh;
+  background-image:url('../../images/background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#bgText {
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  top: 5%;
+  color: white;
+}
+
+#bgText h1 {
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+#bgText h2 {
+  font-size: 1.5rem;
+}
+
+#home h3 {
+  padding-left: 20px;
+}
+
+/* Small devices (landscape phones, 544px and up) */
+@media (min-width: 544px) {
+  #bgText h1 {font-size:4rem;} /*1rem = 16px*/
+  #bgText h2 {font-size:2rem;}
+  #bgText {top: 7.5%;}
+  #bgWrap {height: 85vh;}
+}
+
+/* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+@media (min-width: 768px) {
+  #bgText h1 {font-size:6rem;} /*1rem = 16px*/
+  #bgText h2 {font-size:3rem;}
+  #bgText {top: 10%;}
+  #bgWrap {height: 85vh;}
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  #bgText h1 {font-size:7rem;} /*1rem = 16px*/
+  #bgText h2 {font-size:4rem;}
+  #bgText {top: 10%;}
+  #bgWrap {height: 85vh;}
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  #bgText h1 {font-size:8rem;} /*1rem = 16px*/
+  #bgText h2 {font-size:4.5rem;}
+  #bgText {top: 10%;}
+  #bgWrap {height: 85vh;}
+}
