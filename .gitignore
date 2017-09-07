@@ -1,1 +1,5 @@
 FitJournal/
+node_modules
+migrations
+__pycache__
+api/management
