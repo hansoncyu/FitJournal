@@ -81,6 +81,8 @@ export function logoutUser() {
         dispatch({type:'LOGOUT_USER'});
       })
       .catch(err => {
+        localStorage.setItem('fitjournalToken', null);
+        localStorage.setItem('fitjournalUsername', null);
         dispatch({type:'LOGOUT_ERROR'});
       });
   }

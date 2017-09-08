@@ -76,7 +76,6 @@ def exercises(request):
         return JsonResponse(error, status=400)
 
 def routine(request):
-    # TODO: add GET and POST handlers
     if request.method == 'GET':
         if not request.user.is_authenticated():
             error = {'error': 'Not logged in'}
@@ -91,9 +90,9 @@ def routine(request):
         if name == 'All':
             try:
                 data = Routine.objects.filter(author=user)
-
             except:
-                pass
+                error = {'error': 'No routines found'}
+                return JsonResponse(error, status=500)
             data = serializers.serialize('python', data, fields=('name'))
         else:
             try:
@@ -348,7 +347,6 @@ def loginRoute(request):
 
 def logoutRoute(request):
     if request.method == 'GET':
-        print(request.user)
         if not request.user.is_authenticated():
             error = {'error': 'Not logged in'}
             return JsonResponse(error, status=401)
