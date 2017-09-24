@@ -66,18 +66,10 @@ class RoutineRouteTestCase(TestCase):
         client = Client()
         client.login(username='testUser', password='testPassword')
 
-        queryAll = '/api/routine?name=All'
-        response = client.get(queryAll)
-        response_data = response.content.decode('utf-8')
-        response_data = json.loads(response_data)
-        name = response_data[0]['fields']['name']
-        self.assertEqual(name, 'Strength Block')
-
-        # specific routine query
-        querySpec = '/api/routine?name=Strength+Block'
+        querySpec = '/api/routine'
         response = client.get(querySpec)
         response_data = response.content.decode('utf-8')
-        response_data = json.loads(response_data)
+        response_data = json.loads(response_data)[0]
         name = response_data['name']
         days = response_data['workouts'][0]['days']
         exercise = response_data['workouts'][0]['exercises'][0]['exercise_name']
@@ -99,7 +91,7 @@ class RoutineRouteTestCase(TestCase):
 
         response = client.post('/api/routine', payload)
         response_data = response.content.decode('utf-8')
-        response_data = json.loads(response_data)
+        response_data = json.loads(response_data)[1]
         name = response_data['name']
         days = response_data['workouts'][0]['days']
         exercise = response_data['workouts'][0]['exercises'][0]['exercise_name']

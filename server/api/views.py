@@ -10,7 +10,8 @@ from django.contrib.auth import authenticate, login, logout
 from api.serializers import RoutineSerializer, JournalSerializer
 from rest_framework.renderers import JSONRenderer
 from django.views.decorators.csrf import csrf_exempt
-
+from datetime import datetime
+import pytz
 
 def exercises(request):
     if request.method == 'GET':
@@ -75,102 +76,148 @@ def exercises(request):
         error = {'error': 'Invalid HTTP request'}
         return JsonResponse(error, status=400)
 
+@csrf_exempt
 def routine(request):
     if request.method == 'GET':
         if not request.user.is_authenticated():
             error = {'error': 'Not logged in'}
             return JsonResponse(error, status=401)
         params = request.GET.dict()
-        if not 'name' in params:
-            error = { 'error': 'Invalid GET parameters' }
-            return JsonResponse(error, status=400)
         user = request.user
-        name = params['name']
         data = []
-        if name == 'All':
-            try:
-                data = Routine.objects.filter(author=user)
-            except:
-                error = {'error': 'No routines found'}
-                return JsonResponse(error, status=500)
-            data = serializers.serialize('python', data, fields=('name'))
-        else:
-            try:
-                data = Routine.objects.get(name=name, author=user)
-            except:
-                pass
-
-            # custom serializer and then rendered into JSON. Need to convert back to python dict before sending as JsonResponse
-            data = RoutineSerializer(data)
-            data = JSONRenderer().render(data.data)
-            data = data.decode('utf-8')
-            data = json.loads(data)
         try:
-            for d in data:
-                del d['model']
+            data = Routine.objects.filter(author=user)
+
         except:
-            pass
+            error = {'error': 'No routines found'}
+            return JsonResponse(error, status=500)
+            # custom serializer and then rendered into JSON. Need to convert back to python dict before sending as JsonResponse
+        data = RoutineSerializer(data, many=True)
+        data = JSONRenderer().render(data.data)
+        data = data.decode('utf-8')
+        data = json.loads(data)
         return JsonResponse(data, safe=False)
 
     elif request.method == 'POST':
         if not request.user.is_authenticated():
             error = {'error': 'Not logged in'}
             return JsonResponse(error, status=401)
-        params = request.POST.dict()
-        if 'name' not in params:
-            error = {'error': 'Invalid POST parameters'}
-            return JsonResponse(error, status=400)
+
+        params = request.body.decode('utf-8')
+        params = json.loads(params)
         user = request.user
-        name = params['name']
-        new_routine = Routine(
-            name=name,
-            author=user
-        )
+        try:
+            name = params['name']
+            new_routine = Routine(
+                name=name,
+                author=user
+            )
+            data = Routine.objects.filter(author=user)
+            print(data)
+        except:
+            pass
         if 'routine_id' in params:
-            new_routine.pk = params['routine_id']
+            new_routine = Routine.objects.get(pk=params['routine_id'])
         try:
             new_routine.save()
         except Exception as err:
+            print(err)
             error = {'error': str(err)}
-            return JsonResponse(error, status=500)
+            pass
         if 'days' in params:
             days = params['days']
-            days = ast.literal_eval(days)
             new_workout = Workout(
                 days=days
             )
         if 'workout_id' in params:
-            new_workout.pk = params['workout_id']
+            new_workout = Workout.objects.get(pk=params['workout_id'])
         try:
             new_workout.save()
         except Exception as err:
+            print(err)
             error = {'error': str(err)}
-            return JsonResponse(error, status=500)
+            pass
         if 'exercise_id' in params:
             exercise_id = params['exercise_id']
             try:
                 new_exercise = Exercise.objects.get(pk=exercise_id)
                 new_workout.exercises.add(new_exercise)
             except Exception as err:
+                print(err)
                 error = {'error': str(err)}
-                return JsonResponse(error, status=500)
+                pass
 
         try:
             new_routine.workouts.add(new_workout)
         except Exception as err:
+            print(err)
             error = {'error': str(err)}
-            return JsonResponse(error, status=500)
+            pass
 
-        data = RoutineSerializer(new_routine)
+        data = []
+        try:
+            data = Routine.objects.filter(author=user)
+        except:
+            error = {'error': 'No routines found'}
+            return JsonResponse(error, status=500)
+            # custom serializer and then rendered into JSON. Need to convert back to python dict before sending as JsonResponse
+        data = RoutineSerializer(data, many=True)
         data = JSONRenderer().render(data.data)
         data = data.decode('utf-8')
         data = json.loads(data)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
+
+    elif request.method == 'DELETE':
+        if not request.user.is_authenticated():
+            error = {'error': 'Not logged in'}
+            return JsonResponse(error, status=401)
+        params = request.body
+        params = params.decode('utf-8')
+        params = json.loads(params)
+        user = request.user
+        try:
+            workout_id = params['workout_id']
+            workout = Workout.objects.get(pk=workout_id)
+            if not 'exercise_id' in params and not 'routine_id' in params:
+                workout.delete()
+        except Exception as err:
+            print(err)
+            pass
+        try:
+            exercise_id = params['exercise_id']
+            exercise = Exercise.objects.get(pk=exercise_id)
+            workout.exercises.remove(exercise)
+        except Exception as err:
+            print(err)
+            pass
+        try:
+            routine_id = params['routine_id']
+            routine = Routine.objects.get(pk=routine_id)
+            routine.delete()
+        except Exception as err:
+            print(err)
+            pass
+        data = []
+        try:
+            data = Routine.objects.filter(author=user)
+            data = RoutineSerializer(data, many=True)
+            data = JSONRenderer().render(data.data)
+            data = data.decode('utf-8')
+            data = json.loads(data)
+        except:
+            error = {'error': 'No routines found'}
+            pass
+            # custom serializer and then rendered into JSON. Need to convert back to python dict before sending as JsonResponse
+
+        return JsonResponse(data, safe=False)
+
+
 
     else:
         error = {'error': 'Invalid HTTP request'}
         return JsonResponse(error, status=400)
 
+@csrf_exempt
 def journal(request):
     if request.method == 'GET':
         params = request.GET.dict()
@@ -182,16 +229,19 @@ def journal(request):
             return JsonResponse(error, status=400)
         # date parameter should be moment js formatted date that can be converted to python date
         user = request.user
-        date = dateparse.parse_datetime(params['date'])
+        date = params['date']
+        date = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
+        date = pytz.timezone("US/Eastern").localize(date)
         date = timezone.localdate(date)
         try:
             journal = Journal.objects.get(date=date, author=user)
+            data = JournalSerializer(journal)
+            data = JSONRenderer().render(data.data)
+            data = data.decode('utf-8')
         except Exception as err:
+            print(err)
             error = {'error': str(err)}
             return JsonResponse(error, status=500)
-        data = JournalSerializer(journal)
-        data = JSONRenderer().render(data.data)
-        data = data.decode('utf-8')
         data = json.loads(data)
         return JsonResponse(data)
 
@@ -200,26 +250,39 @@ def journal(request):
         if not request.user.is_authenticated():
             error = {'error': 'Not logged in'}
             return JsonResponse(error, status=401)
-        params = request.POST.dict()
+        params = request.body
+        params = params.decode('utf-8')
+        params = json.loads(params)
         user = request.user
         if 'date' not in params and 'journal_id' not in params:
             error = {'error': 'Invalid POST parameters'}
             return JsonResponse(error, status=400)
+        try:
+            date = params['date']
+            date = datetime.strptime(date, "%a, %d %b %Y %H:%M:%S %Z")
+            date = pytz.timezone("US/Eastern").localize(date)
+            date = timezone.localdate(date)
+        except:
+            pass
         if 'journal_id' in params:
             journal_id = params['journal_id']
             try:
                 journal = Journal.objects.get(pk=journal_id)
             except Exception as err:
+                print(err)
                 error = {'error': str(err)}
                 return JsonResponse(error, status=500)
-        elif 'date' in params:
-            date = dateparse.parse_datetime(params['date'])
-            date = timezone.localdate(date)
-            journal = Journal(
-                date=date,
-                author=user
-            )
-            journal.save()
+        else:
+            try:
+                journal = Journal(
+                    date=date,
+                    author=user
+                )
+                journal.save()
+            except Exception as err:
+                print(err)
+                error = {'error': str(err)}
+                return JsonResponse(error, status=500)
         reps = 0
         weight = 0
         try:
@@ -238,9 +301,10 @@ def journal(request):
                 set.weight = weight
                 set.save()
             except Exception as err:
+                print(err)
                 error = {'error': str(err)}
                 return JsonResponse(error, status=500)
-        else:
+        elif 'exercise_id' in params:
             try:
                 exercise_id = params['exercise_id']
                 exercise = Exercise.objects.get(pk=exercise_id)
@@ -252,11 +316,21 @@ def journal(request):
                 set.save()
                 journal.exercises.add(set)
             except ObjectDoesNotExist:
+                print(err)
                 error = {'error': 'Invalid exercise id'}
                 return JsonResponse(error, status=500)
-        data = JournalSerializer(journal)
-        data = JSONRenderer().render(data.data)
-        data = data.decode('utf-8')
+        try:
+            if 'journal_id' in params:
+                journal = Journal.objects.get(pk=journal_id)
+            else:
+                journal = Journal.objects.get(date=date, author=user)
+            data = JournalSerializer(journal)
+            data = JSONRenderer().render(data.data)
+            data = data.decode('utf-8')
+        except Exception as err:
+            print(err)
+            error = {'error': str(err)}
+            return JsonResponse(error, status=500)
         data = json.loads(data)
         return JsonResponse(data)
 
@@ -265,9 +339,8 @@ def journal(request):
             error = {'error': 'Not logged in'}
             return JsonResponse(error, status=401)
         params = request.body
-        # body is in byte object format and needs to be decoded and formatted to json format then parsed to python dict
         params = params.decode('utf-8')
-        params = ast.literal_eval(params)
+        params = json.loads(params)
         set_id = params['set_id']
         journal_id = params['journal_id']
         set = Sets.objects.get(pk=set_id)

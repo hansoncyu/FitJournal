@@ -3,6 +3,8 @@ import { Route, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logoutUser, verifyToken, removeMessages } from './actions/userActions.js';
+import { removePopUp } from './actions/workoutsActions.js';
+import { removeJournalPopup } from './actions/journalActions.js';
 import './App.css';
 import Home from './components/Home.js';
 import NavBar from './components/NavBar.js';
@@ -36,9 +38,11 @@ class App extends Component {
 
   // change errorRegister and errorLogin on route change so error message will go away
   componentDidUpdate() {
-    if (this.props.errorRegister || this.props.errorLogin || this.props.successRegister) {
+    if (this.props.errorRegister || this.props.errorLogin || this.props.successRegister || this.props.popupIsShowing || this.props.journalPopupIsShowing) {
       const unlisten = this.context.router.history.listen(() => {
         this.props.dispatch(removeMessages());
+        this.props.dispatch(removePopUp());
+        this.props.dispatch(removeJournalPopup());
         unlisten();
       });
     }
@@ -73,7 +77,9 @@ const mapStateToProps = state => {
     isTokenVerified: state.user.isTokenVerified,
     errorLogin: state.user.errorLogin,
     errorRegister: state.user.errorRegister,
-    successRegister: state.user.successRegister
+    successRegister: state.user.successRegister,
+    popupIsShowing: state.workouts.popupIsShowing,
+    journalPopupIsShowing: state.journal.popupIsShowing
   }
 }
 const app = connect(mapStateToProps)(App);

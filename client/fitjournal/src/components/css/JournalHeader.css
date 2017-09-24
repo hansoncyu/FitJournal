@@ -1,0 +1,42 @@
+#headerWrap {
+    height: 70px;
+    width: 900px;
+    margin: 0 auto;
+    border: 1px solid #737373;
+    box-shadow: 3px 3px 5px 1px #bfbfbf;
+    font-size: 23px;
+}
+
+#date {
+    text-align: center;
+    user-select: none;
+    padding-top: 20px;
+    padding-bottom: 15px;
+    background-color: #ebebeb;
+    border-bottom: 1px solid #bfbfbf;
+}
+
+#backDay {
+    float: left;
+    margin-left: 50px;
+}
+
+#forwardDay {
+    float: right;
+    margin-right: 50px;
+}
+
+#JournalHeader {
+  margin-top: 80px;
+}
+
+#JournalHeader a {
+    cursor: pointer;
+}
+
+#JournalHeader .buttonDiv {
+    display: inline-block;
+    height: 140px;
+    width: 300px;
+    text-align: center;
+}

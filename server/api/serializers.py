@@ -12,6 +12,7 @@ class WorkoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = Workout
         fields = ('days', 'exercises', 'id')
+        ordering = ('id',)
 
 class RoutineSerializer(serializers.ModelSerializer):
     workouts = WorkoutSerializer(many=True, read_only=True)
@@ -19,6 +20,7 @@ class RoutineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Routine
         fields = ('name', 'workouts', 'id')
+
 
 class SetsSerializer(serializers.ModelSerializer):
     exercise = ExerciseSerializer(read_only=True)

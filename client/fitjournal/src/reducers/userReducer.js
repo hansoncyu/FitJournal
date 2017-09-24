@@ -5,7 +5,7 @@ const initialUserState = {
   errorLogin: false,
   token: null,
   isTokenVerified: false,
-  successRegister: true
+  successRegister: false
 }
 
 const userReducer = (state=initialUserState, action) => {

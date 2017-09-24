@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import store from '../store.js';
 
 const testServerURL = 'http://localhost:8000';
@@ -83,7 +82,7 @@ export function logoutUser() {
       .catch(err => {
         localStorage.setItem('fitjournalToken', null);
         localStorage.setItem('fitjournalUsername', null);
-        dispatch({type:'LOGOUT_ERROR'});
+        dispatch({type:'LOGOUT_USER'});
       });
   }
 }

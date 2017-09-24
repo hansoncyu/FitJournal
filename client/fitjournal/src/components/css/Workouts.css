@@ -1,4 +1,52 @@
-#workouts h1 {
+#workouts {
   text-align: center;
   margin-top: 80px;
+}
+
+#workouts a {
+  cursor: pointer;
+  text-decoration: none;
+  color: #333;
+}
+
+#workouts i {
+  margin-left: 20px;
+}
+
+#addWorkout {
+  margin-bottom: 35px;
+}
+
+#workouts {
+
+}
+
+.addOrDelete div {
+  margin-bottom: 25px;
+  font-size: 25px;
+}
+
+#workouts .workoutEntry {
+  margin-top: 35px;
+}
+
+.workoutName {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.days {
+  font-size: 22px;
+  margin: 0 auto;
+  width: 498px;
+  margin-bottom: 5px;
+  background-color: white;
+}
+
+.daysBlock {
+  margin: 0 auto;
+  width: 500px;
+  margin-bottom: 15px;
+  background-color: #E1E0E0;
+  border: 1px solid black;
 }
