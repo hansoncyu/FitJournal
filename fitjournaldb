@@ -1,0 +1,2155 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 9.6.4
+-- Dumped by pg_dump version 9.6.4
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: api_exercise; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_exercise (
+    id integer NOT NULL,
+    muscle_group character varying(20) NOT NULL,
+    author_id integer,
+    exercise_name character varying(50)
+);
+
+
+ALTER TABLE api_exercise OWNER TO hansonyu;
+
+--
+-- Name: api_exercise_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_exercise_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_exercise_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_exercise_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_exercise_id_seq OWNED BY api_exercise.id;
+
+
+--
+-- Name: api_journal; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_journal (
+    id integer NOT NULL,
+    date timestamp with time zone NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE api_journal OWNER TO hansonyu;
+
+--
+-- Name: api_journal_exercises; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_journal_exercises (
+    id integer NOT NULL,
+    journal_id integer NOT NULL,
+    sets_id integer NOT NULL
+);
+
+
+ALTER TABLE api_journal_exercises OWNER TO hansonyu;
+
+--
+-- Name: api_journal_exercises_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_journal_exercises_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_journal_exercises_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_journal_exercises_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_journal_exercises_id_seq OWNED BY api_journal_exercises.id;
+
+
+--
+-- Name: api_journal_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_journal_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_journal_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_journal_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_journal_id_seq OWNED BY api_journal.id;
+
+
+--
+-- Name: api_routine; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_routine (
+    id integer NOT NULL,
+    name character varying(30) NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE api_routine OWNER TO hansonyu;
+
+--
+-- Name: api_program_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_program_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_program_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_program_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_program_id_seq OWNED BY api_routine.id;
+
+
+--
+-- Name: api_routine_workouts; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_routine_workouts (
+    id integer NOT NULL,
+    routine_id integer NOT NULL,
+    workout_id integer NOT NULL
+);
+
+
+ALTER TABLE api_routine_workouts OWNER TO hansonyu;
+
+--
+-- Name: api_program_workouts_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_program_workouts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_program_workouts_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_program_workouts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_program_workouts_id_seq OWNED BY api_routine_workouts.id;
+
+
+--
+-- Name: api_sets; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_sets (
+    id integer NOT NULL,
+    reps integer NOT NULL,
+    weight integer NOT NULL,
+    exercise_id integer NOT NULL
+);
+
+
+ALTER TABLE api_sets OWNER TO hansonyu;
+
+--
+-- Name: api_sets_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_sets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_sets_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_sets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_sets_id_seq OWNED BY api_sets.id;
+
+
+--
+-- Name: api_workout; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_workout (
+    id integer NOT NULL,
+    days character varying(5)[] NOT NULL
+);
+
+
+ALTER TABLE api_workout OWNER TO hansonyu;
+
+--
+-- Name: api_workout_exercises; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE api_workout_exercises (
+    id integer NOT NULL,
+    workout_id integer NOT NULL,
+    exercise_id integer NOT NULL
+);
+
+
+ALTER TABLE api_workout_exercises OWNER TO hansonyu;
+
+--
+-- Name: api_workout_exercises_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_workout_exercises_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_workout_exercises_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_workout_exercises_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_workout_exercises_id_seq OWNED BY api_workout_exercises.id;
+
+
+--
+-- Name: api_workout_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE api_workout_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE api_workout_id_seq OWNER TO hansonyu;
+
+--
+-- Name: api_workout_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE api_workout_id_seq OWNED BY api_workout.id;
+
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE auth_group OWNER TO hansonyu;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_group_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_group_permissions OWNER TO hansonyu;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_group_permissions_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE auth_permission OWNER TO hansonyu;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_permission_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone,
+    is_superuser boolean NOT NULL,
+    username character varying(150) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(254) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE auth_user OWNER TO hansonyu;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_user_groups OWNER TO hansonyu;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_groups_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE auth_user_user_permissions OWNER TO hansonyu;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE auth_user_user_permissions_id_seq OWNER TO hansonyu;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- Name: authtoken_token; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE authtoken_token (
+    key character varying(40) NOT NULL,
+    created timestamp with time zone NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE authtoken_token OWNER TO hansonyu;
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    content_type_id integer,
+    user_id integer NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE django_admin_log OWNER TO hansonyu;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_admin_log_id_seq OWNER TO hansonyu;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE django_content_type OWNER TO hansonyu;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_content_type_id_seq OWNER TO hansonyu;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE django_migrations OWNER TO hansonyu;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: hansonyu
+--
+
+CREATE SEQUENCE django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE django_migrations_id_seq OWNER TO hansonyu;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: hansonyu
+--
+
+ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: hansonyu
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE django_session OWNER TO hansonyu;
+
+--
+-- Name: api_exercise id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_exercise ALTER COLUMN id SET DEFAULT nextval('api_exercise_id_seq'::regclass);
+
+
+--
+-- Name: api_journal id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal ALTER COLUMN id SET DEFAULT nextval('api_journal_id_seq'::regclass);
+
+
+--
+-- Name: api_journal_exercises id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal_exercises ALTER COLUMN id SET DEFAULT nextval('api_journal_exercises_id_seq'::regclass);
+
+
+--
+-- Name: api_routine id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine ALTER COLUMN id SET DEFAULT nextval('api_program_id_seq'::regclass);
+
+
+--
+-- Name: api_routine_workouts id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine_workouts ALTER COLUMN id SET DEFAULT nextval('api_program_workouts_id_seq'::regclass);
+
+
+--
+-- Name: api_sets id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_sets ALTER COLUMN id SET DEFAULT nextval('api_sets_id_seq'::regclass);
+
+
+--
+-- Name: api_workout id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout ALTER COLUMN id SET DEFAULT nextval('api_workout_id_seq'::regclass);
+
+
+--
+-- Name: api_workout_exercises id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout_exercises ALTER COLUMN id SET DEFAULT nextval('api_workout_exercises_id_seq'::regclass);
+
+
+--
+-- Name: auth_group id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- Name: auth_group_permissions id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: auth_permission id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: auth_user id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_groups id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: auth_user_user_permissions id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: django_admin_log id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: django_content_type id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: django_migrations id; Type: DEFAULT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+
+
+--
+-- Data for Name: api_exercise; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_exercise (id, muscle_group, author_id, exercise_name) FROM stdin;
+1	Legs	\N	Barbell Deadlifts
+2	Legs	\N	Barbell Hack Squat
+3	Legs	\N	Barbell Lunges
+4	Legs	\N	Barbell Squat
+5	Legs	\N	Bench Squat
+6	Legs	\N	Bulgarian Split Squats
+7	Legs	\N	Front Squats
+8	Legs	\N	Front Squat to Bench
+9	Legs	\N	Good Mornings Exercise
+10	Legs	\N	Jefferson Squats
+11	Legs	\N	One Leg Squat
+12	Legs	\N	Overhead Squat
+13	Legs	\N	Power Clean
+14	Legs	\N	Reverse Lunge
+15	Legs	\N	Rocking Standing Calf Raise
+16	Legs	\N	Romanian Deadlift
+17	Legs	\N	Side Lunges
+18	Legs	\N	Side Split Squat
+19	Legs	\N	Speed Squats 
+20	Legs	\N	Standing Calf Raises
+21	Legs	\N	Sumo Deadlifts
+22	Legs	\N	Suitcase Deadlift
+23	Legs	\N	Step Ups 
+24	Legs	\N	Stiff Leg Deadlift
+25	Legs	\N	Wide Stance Squat 
+26	Legs	\N	Zecher Squats 
+27	Legs	\N	Back Extension Exercise
+28	Legs	\N	Donkey Calf Raises
+29	Legs	\N	Flutter Kicks
+30	Legs	\N	Glute Bridge Exercise
+31	Legs	\N	Cable Hip Abduction
+32	Legs	\N	Glute Kickbacks
+33	Legs	\N	Dumbbell Calf Raises
+34	Legs	\N	Dumbbell Deadlifts
+35	Legs	\N	Dumbbell Lunge 
+36	Legs	\N	Dumbbell Split Squat
+37	Legs	\N	Dumbbell Squat 
+38	Legs	\N	Dumbbell Squats to Bench 
+39	Legs	\N	Dumbbell Step Up
+40	Legs	\N	Reverse Lunges
+41	Legs	\N	Rocking Standing Calf Raise
+42	Legs	\N	Romanian Deadlifts
+43	Legs	\N	Sissy Squat
+44	Legs	\N	Sumo Squat 
+45	Legs	\N	Walking Lunges Exercise
+46	Legs	\N	Calves Press on Leg Machine
+47	Legs	\N	Hip Abduction Exercise
+48	Legs	\N	Hip Adduction Exercise
+49	Legs	\N	Leg Curls Exercise
+50	Legs	\N	Leg Extensions Exercise
+51	Legs	\N	Leg Press Exercise 
+52	Legs	\N	Machine Hack Squats 
+53	Legs	\N	Narrow Stance Hack Squats 
+54	Legs	\N	Narrow Stance Leg Press 
+55	Legs	\N	Seated Calf Raise
+56	Legs	\N	Smith Machine Goodmorning
+57	Legs	\N	Smith Machine Hack Squats 
+58	Legs	\N	Barbell Deadlifts
+59	Legs	\N	Barbell Hack Squat
+60	Legs	\N	Barbell Lunges
+61	Legs	\N	Barbell Squat
+62	Legs	\N	Bench Squat
+63	Legs	\N	Bulgarian Split Squats
+64	Legs	\N	Front Squats
+65	Legs	\N	Front Squat to Bench
+66	Legs	\N	Good Mornings Exercise
+67	Legs	\N	Jefferson Squats
+68	Legs	\N	One Leg Squat
+69	Legs	\N	Overhead Squat
+70	Legs	\N	Power Clean
+71	Legs	\N	Reverse Lunge
+72	Legs	\N	Rocking Standing Calf Raise
+73	Legs	\N	Romanian Deadlift
+74	Legs	\N	Side Lunges
+75	Legs	\N	Side Split Squat
+76	Legs	\N	Speed Squats 
+77	Legs	\N	Standing Calf Raises
+78	Legs	\N	Sumo Deadlifts
+79	Legs	\N	Suitcase Deadlift
+80	Legs	\N	Step Ups 
+81	Legs	\N	Stiff Leg Deadlift
+82	Legs	\N	Wide Stance Squat 
+83	Legs	\N	Zecher Squats 
+84	Legs	\N	Back Extension Exercise
+85	Legs	\N	Donkey Calf Raises
+86	Legs	\N	Flutter Kicks
+87	Legs	\N	Glute Bridge Exercise
+88	Legs	\N	Cable Hip Abduction
+89	Legs	\N	Glute Kickbacks
+90	Legs	\N	Dumbbell Calf Raises
+91	Legs	\N	Dumbbell Deadlifts
+92	Legs	\N	Dumbbell Lunge 
+93	Legs	\N	Dumbbell Split Squat
+94	Legs	\N	Dumbbell Squat 
+95	Legs	\N	Dumbbell Squats to Bench 
+96	Legs	\N	Dumbbell Step Up
+97	Legs	\N	Reverse Lunges
+98	Legs	\N	Rocking Standing Calf Raise
+99	Legs	\N	Romanian Deadlifts
+100	Legs	\N	Sissy Squat
+101	Legs	\N	Sumo Squat 
+102	Legs	\N	Walking Lunges Exercise
+103	Legs	\N	Calves Press on Leg Machine
+104	Legs	\N	Hip Abduction Exercise
+105	Legs	\N	Hip Adduction Exercise
+106	Legs	\N	Leg Curls Exercise
+107	Legs	\N	Leg Extensions Exercise
+108	Legs	\N	Leg Press Exercise 
+109	Legs	\N	Machine Hack Squats 
+110	Legs	\N	Narrow Stance Hack Squats 
+111	Legs	\N	Narrow Stance Leg Press 
+112	Legs	\N	Seated Calf Raise
+113	Legs	\N	Smith Machine Goodmorning
+114	Legs	\N	Smith Machine Hack Squats 
+115	Legs	\N	Smith Machine Reverse Calf Raises
+116	Legs	\N	Smith Machine Romanian Deadlifts
+117	Legs	\N	Standing Calf Raise
+118	Legs	\N	Standing Leg Curls
+119	Legs	\N	Smith Machine Squat
+120	Legs	\N	Barbell Deadlifts
+121	Legs	\N	Barbell Pullover 
+122	Legs	\N	Barbell T-Bar Row
+123	Legs	\N	Bent Over Row
+124	Legs	\N	Goodmorning
+125	Legs	\N	Romanian Deadlift
+126	Legs	\N	One Arm Side Deadlifts
+127	Legs	\N	Power Clean
+128	Legs	\N	Reverse Grip Bent Over Row
+129	Legs	\N	Stiff Leg Deadlift
+130	Legs	\N	Sumo Deadlift
+131	Legs	\N	Back Extensions
+132	Legs	\N	Body Row
+133	Legs	\N	Chin Ups
+134	Legs	\N	Climber Pull Ups
+135	Legs	\N	Gironda Sternum Chin Ups
+136	Legs	\N	Narrow Parallel Grip Chin Ups
+137	Legs	\N	Pull Ups
+138	Legs	\N	Cable Back Extensions
+139	Legs	\N	Close Grip Front Lat Pull Down
+140	Legs	\N	Lat Pull Down
+141	Legs	\N	Rear Lateral Raise
+142	Legs	\N	Reverse Grip Lat Pull Down
+143	Legs	\N	Seated Cable Reverse Fly
+144	Legs	\N	Seated Cable Row
+145	Legs	\N	Straight Arm Pull Down
+146	Legs	\N	V-Bar Lat Pull Down
+147	Legs	\N	Dumbbell Deadlift
+148	Legs	\N	Dumbbell Pullover
+149	Legs	\N	Dumbbell Rows
+150	Legs	\N	Power Cleans
+151	Legs	\N	Pushups Row
+152	Legs	\N	Reverse Flys (One Arm)
+153	Legs	\N	Reverse Fly
+154	Legs	\N	Romanian Deadlifts
+155	Legs	\N	Single-Arm Bent Over Row
+156	Legs	\N	Smith Machine Bent Over Row
+157	Legs	\N	Smith Machine Goodmorning
+158	Legs	\N	Smith Machine Romanian Deadlifts
+159	Back	\N	Barbell Deadlifts
+160	Back	\N	Barbell Pullover 
+161	Back	\N	Barbell T-Bar Row
+162	Back	\N	Bent Over Row
+163	Back	\N	Goodmorning
+164	Back	\N	Romanian Deadlift
+165	Back	\N	One Arm Side Deadlifts
+166	Back	\N	Power Clean
+167	Back	\N	Reverse Grip Bent Over Row
+168	Back	\N	Stiff Leg Deadlift
+169	Back	\N	Sumo Deadlift
+170	Back	\N	Back Extensions
+171	Back	\N	Body Row
+172	Back	\N	Chin Ups
+173	Back	\N	Climber Pull Ups
+174	Back	\N	Gironda Sternum Chin Ups
+175	Back	\N	Narrow Parallel Grip Chin Ups
+176	Back	\N	Pull Ups
+177	Back	\N	Cable Back Extensions
+178	Back	\N	Close Grip Front Lat Pull Down
+179	Back	\N	Lat Pull Down
+180	Back	\N	Rear Lateral Raise
+181	Back	\N	Reverse Grip Lat Pull Down
+182	Back	\N	Seated Cable Reverse Fly
+183	Back	\N	Seated Cable Row
+184	Back	\N	Straight Arm Pull Down
+185	Back	\N	V-Bar Lat Pull Down
+186	Back	\N	Dumbbell Deadlift
+187	Back	\N	Dumbbell Pullover
+188	Back	\N	Dumbbell Rows
+189	Back	\N	Power Cleans
+190	Back	\N	Pushups Row
+191	Back	\N	Reverse Flys (One Arm)
+192	Back	\N	Reverse Fly
+193	Back	\N	Romanian Deadlifts
+194	Back	\N	Single-Arm Bent Over Row
+195	Back	\N	Smith Machine Bent Over Row
+196	Back	\N	Smith Machine Goodmorning
+197	Back	\N	Smith Machine Romanian Deadlifts
+198	Legs	\N	Barbell Deadlifts
+199	Legs	\N	Barbell Hack Squat
+200	Legs	\N	Barbell Lunges
+201	Legs	\N	Barbell Squat
+202	Legs	\N	Bench Squat
+203	Legs	\N	Bulgarian Split Squats
+204	Legs	\N	Front Squats
+205	Legs	\N	Front Squat to Bench
+206	Legs	\N	Good Mornings Exercise
+207	Legs	\N	Jefferson Squats
+208	Legs	\N	One Leg Squat
+209	Legs	\N	Overhead Squat
+210	Legs	\N	Power Clean
+211	Legs	\N	Reverse Lunge
+212	Legs	\N	Rocking Standing Calf Raise
+213	Legs	\N	Romanian Deadlift
+214	Legs	\N	Side Lunges
+215	Legs	\N	Side Split Squat
+216	Legs	\N	Speed Squats 
+217	Legs	\N	Standing Calf Raises
+218	Legs	\N	Sumo Deadlifts
+219	Legs	\N	Suitcase Deadlift
+220	Legs	\N	Step Ups 
+221	Legs	\N	Stiff Leg Deadlift
+222	Legs	\N	Wide Stance Squat 
+223	Legs	\N	Zecher Squats 
+224	Legs	\N	Back Extension Exercise
+225	Legs	\N	Donkey Calf Raises
+226	Legs	\N	Flutter Kicks
+227	Legs	\N	Glute Bridge Exercise
+228	Legs	\N	Cable Hip Abduction
+229	Legs	\N	Glute Kickbacks
+230	Legs	\N	Dumbbell Calf Raises
+231	Legs	\N	Dumbbell Deadlifts
+232	Legs	\N	Dumbbell Lunge 
+233	Legs	\N	Dumbbell Split Squat
+234	Legs	\N	Dumbbell Squat 
+235	Legs	\N	Dumbbell Squats to Bench 
+236	Legs	\N	Dumbbell Step Up
+237	Legs	\N	Reverse Lunges
+238	Legs	\N	Rocking Standing Calf Raise
+239	Legs	\N	Romanian Deadlifts
+240	Legs	\N	Sissy Squat
+241	Legs	\N	Sumo Squat 
+242	Legs	\N	Walking Lunges Exercise
+243	Legs	\N	Calves Press on Leg Machine
+244	Legs	\N	Hip Abduction Exercise
+245	Legs	\N	Hip Adduction Exercise
+246	Legs	\N	Leg Curls Exercise
+247	Legs	\N	Leg Extensions Exercise
+248	Legs	\N	Leg Press Exercise 
+249	Legs	\N	Machine Hack Squats 
+250	Legs	\N	Narrow Stance Hack Squats 
+251	Legs	\N	Narrow Stance Leg Press 
+252	Legs	\N	Seated Calf Raise
+253	Legs	\N	Smith Machine Goodmorning
+254	Legs	\N	Smith Machine Hack Squats 
+255	Legs	\N	Smith Machine Reverse Calf Raises
+256	Legs	\N	Smith Machine Romanian Deadlifts
+257	Legs	\N	Standing Calf Raise
+258	Legs	\N	Standing Leg Curls
+259	Legs	\N	Smith Machine Squat
+260	Chest	\N	Barbell Pullover
+261	Chest	\N	Bench Press
+262	Chest	\N	Decline Bench Press
+263	Chest	\N	Incline Bench Press
+264	Chest	\N	Wide Grip Bench Press
+265	Chest	\N	Wide Grip Decline Bench
+266	Chest	\N	Biased Pushups
+267	Chest	\N	Chest Dip
+268	Chest	\N	Exercise Ball Pushups
+269	Chest	\N	Pushups
+270	Chest	\N	Plyo Pushups
+271	Chest	\N	Tricep Pushups
+272	Chest	\N	Wide Chest Pushups
+273	Chest	\N	Cable Chest Flys
+274	Chest	\N	Cable Crossover
+275	Chest	\N	Incline Cable Chest Flys
+276	Chest	\N	Chest Fly
+277	Chest	\N	Decline Dumbbell Flys
+278	Chest	\N	Decline Dumbbell Bench Press
+279	Chest	\N	Dumbbell Bench Press
+280	Chest	\N	Dumbbell Fly (One Arm)
+281	Chest	\N	Dumbbell Flys
+282	Chest	\N	Dumbbell Incline Press
+283	Chest	\N	Dumbbell Pullover
+284	Chest	\N	Hammer Grip Incline Press
+285	Chest	\N	Incline Dumbbell Flys with a Twist
+286	Chest	\N	One Arm Bench Press
+287	Chest	\N	Butterfly Exercise
+288	Chest	\N	Machine Bench Press
+289	Chest	\N	Machine Decline Bench
+290	Chest	\N	Machine Incline Bench
+291	Chest	\N	Smith Machine Bench Press
+292	Chest	\N	Smith Machine Incline
+293	Shoulders	\N	Barbell Front Raise
+294	Shoulders	\N	Barbell Shrugs
+295	Shoulders	\N	Barbell Upright Row
+296	Shoulders	\N	Clean and Press
+297	Shoulders	\N	Hang Cleans
+298	Shoulders	\N	Seated Military Press
+299	Shoulders	\N	Standing Overhead Press
+300	Shoulders	\N	Cable Front Raise
+301	Shoulders	\N	Cable Lateral Raises
+302	Shoulders	\N	Cable Shrugs
+303	Shoulders	\N	Cable Upright Row
+304	Shoulders	\N	Rear Lateral Raises
+305	Shoulders	\N	Seated Cable Reverse Fly
+306	Shoulders	\N	Arnold Press
+307	Shoulders	\N	Cuban Press
+308	Shoulders	\N	Dumbbell Front Raise
+309	Shoulders	\N	Dumbbell Lateral Raise
+310	Shoulders	\N	Dumbbell Raises
+311	Shoulders	\N	Dumbbell Shoulder Press
+312	Shoulders	\N	Dumbbell Shrug
+313	Shoulders	\N	Dumbbell Upright Row
+314	Shoulders	\N	Iron Cross
+315	Shoulders	\N	One-Arm Upright Row
+316	Shoulders	\N	Reverse Fly
+317	Shoulders	\N	Reverse Flys (One Arm)
+318	Shoulders	\N	Machine Shoulder Press
+319	Shoulders	\N	Smith Machine Shrug
+320	Shoulders	\N	Smith Machine Upright Row
+321	Biceps	\N	Bicep Curl
+322	Biceps	\N	Bicep Curl with Deadlift
+323	Biceps	\N	Close Grip EZ Bar Curl
+324	Biceps	\N	Close Grip Bicep Curl
+325	Biceps	\N	Drag Curl
+326	Biceps	\N	EZ Bar Curl 
+327	Biceps	\N	Lying High Bench Bicep Curl
+328	Biceps	\N	Lying Incline Curl 
+329	Biceps	\N	One Arm Bicep Curl with Olympic Bar
+330	Biceps	\N	Preacher Bar Curl
+331	Biceps	\N	Seated Close Grip Concentration Curl
+332	Biceps	\N	Spider Bicep Curl
+333	Biceps	\N	Wide Grip Standing Bicep Curl
+334	Biceps	\N	Chin Ups
+335	Biceps	\N	Gironda Sternum Chin Ups
+336	Biceps	\N	Narrow Parallel Grip Chin Ups
+337	Biceps	\N	Hammer Curls with Rope
+338	Biceps	\N	High Cable Curls
+339	Biceps	\N	Lying Bicep Cable Curl
+340	Biceps	\N	Lying Close Grip BicepCable Curls
+341	Biceps	\N	Overhead Cable Curl
+342	Biceps	\N	Cable Preacher Curl
+343	Biceps	\N	Standing Bicep Cable Curl
+344	Biceps	\N	Standing One Arm Cable Curl
+345	Biceps	\N	Alternate Bicep Curl
+346	Biceps	\N	Alternate Hammer Curl
+347	Biceps	\N	Alternate Incline Curl 
+348	Biceps	\N	Bicep Curl (Incline)
+349	Biceps	\N	Bicep Curl Squat
+350	Biceps	\N	Bicep Curl on Stability Ball
+351	Biceps	\N	Bicep Curl V Sit on Bosu
+352	Triceps	\N	Barbell Decline Triceps Extension
+353	Triceps	\N	Barbell Incline Triceps Extension
+354	Triceps	\N	Barbell Reverse Triceps Extension
+355	Triceps	\N	Behind the Head Lying Close-Grip Triceps Extension
+356	Triceps	\N	Close Grip Bench Press
+357	Triceps	\N	Decline Close Grip Bench to Skull Crusher
+358	Triceps	\N	JM Press
+359	Triceps	\N	Reverse Triceps Bench Press
+360	Triceps	\N	Seated Overhead Triceps Extension
+361	Triceps	\N	Skull Crushers
+362	Triceps	\N	Smith Machine Close Grip Bench Press
+363	Triceps	\N	Standing Overhead Triceps Extension
+364	Triceps	\N	Bench Tricep Dips
+365	Triceps	\N	Tricep Pushups
+366	Triceps	\N	Standing Towel Triceps Extension
+367	Triceps	\N	Tricep Dips
+368	Triceps	\N	Cable Incline Triceps Extension
+369	Triceps	\N	Cable Skull Crushers
+370	Triceps	\N	Cable Triceps Extension
+371	Triceps	\N	Concentration Triceps Extension
+372	Triceps	\N	Incline Tricep Pushdown
+373	Triceps	\N	Kneeling Triceps Extension
+374	Triceps	\N	Low Triceps Extension
+375	Triceps	\N	One Arm Reverse Grip Tricep Pushdown
+376	Triceps	\N	Reverse Grip Tricep Pushdown
+377	Triceps	\N	Standing One-Arm Low-Pulley Triceps Extension
+378	Triceps	\N	Tricep Pushdown
+379	Triceps	\N	Tricep Pushdown with Rope
+380	Triceps	\N	Tricep Pushdown with V-Bar
+381	Triceps	\N	Dumbbell Decline Triceps Extension
+382	Triceps	\N	Dumbbell Reverse Triceps Extension
+383	Triceps	\N	Incline Triceps Extension
+384	Triceps	\N	Lying Triceps Extension
+385	Triceps	\N	Lying Triceps Extension Across Face
+386	Triceps	\N	One Arm Triceps Extension
+387	Triceps	\N	Seated Tricep Kickback
+388	Triceps	\N	Single Arm Pronated Triceps Extension
+389	Triceps	\N	Single Arm Supinated Triceps Extension
+390	Triceps	\N	Standing One Arm Triceps Extension
+391	Triceps	\N	Tate Press
+392	Triceps	\N	Triceps Extension
+393	Triceps	\N	Tricep Kickback
+394	Triceps	\N	Machine Tricep Dips
+395	Triceps	\N	Machine Triceps Extension
+396	Triceps	\N	
+\.
+
+
+--
+-- Name: api_exercise_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_exercise_id_seq', 396, true);
+
+
+--
+-- Data for Name: api_journal; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_journal (id, date, author_id) FROM stdin;
+1	2017-09-21 00:00:00-04	6
+2	2017-09-21 00:00:00-04	6
+3	2017-09-20 00:00:00-04	6
+4	2017-09-20 00:00:00-04	6
+5	2017-09-19 00:00:00-04	6
+6	2017-09-19 00:00:00-04	6
+7	2017-09-18 00:00:00-04	6
+8	2017-09-18 00:00:00-04	6
+9	2017-09-17 00:00:00-04	6
+10	2017-09-17 00:00:00-04	6
+11	2017-09-24 00:00:00-04	6
+\.
+
+
+--
+-- Data for Name: api_journal_exercises; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_journal_exercises (id, journal_id, sets_id) FROM stdin;
+1	1	1
+2	2	2
+3	3	3
+4	4	4
+6	5	6
+7	5	7
+8	5	8
+10	5	10
+12	7	12
+13	9	13
+15	11	15
+17	11	17
+\.
+
+
+--
+-- Name: api_journal_exercises_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_journal_exercises_id_seq', 17, true);
+
+
+--
+-- Name: api_journal_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_journal_id_seq', 11, true);
+
+
+--
+-- Name: api_program_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_program_id_seq', 20, true);
+
+
+--
+-- Name: api_program_workouts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_program_workouts_id_seq', 5, true);
+
+
+--
+-- Data for Name: api_routine; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_routine (id, name, author_id) FROM stdin;
+19	Test	6
+20	Test 2	6
+\.
+
+
+--
+-- Data for Name: api_routine_workouts; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_routine_workouts (id, routine_id, workout_id) FROM stdin;
+2	19	2
+4	19	4
+5	20	5
+\.
+
+
+--
+-- Data for Name: api_sets; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_sets (id, reps, weight, exercise_id) FROM stdin;
+1	0	0	345
+2	0	0	372
+3	0	0	283
+4	0	0	335
+7	0	0	372
+8	0	0	347
+10	0	0	347
+6	5	20	335
+12	0	0	372
+13	2	10	84
+15	6	20	345
+17	4	45	84
+\.
+
+
+--
+-- Name: api_sets_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_sets_id_seq', 17, true);
+
+
+--
+-- Data for Name: api_workout; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_workout (id, days) FROM stdin;
+4	{Mon,Thurs}
+2	{Sun,Wed}
+5	{Wed,Thurs,Fri}
+\.
+
+
+--
+-- Data for Name: api_workout_exercises; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY api_workout_exercises (id, workout_id, exercise_id) FROM stdin;
+1	2	347
+2	4	283
+3	2	84
+5	2	345
+7	4	372
+8	4	335
+11	5	345
+\.
+
+
+--
+-- Name: api_workout_exercises_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_workout_exercises_id_seq', 11, true);
+
+
+--
+-- Name: api_workout_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('api_workout_id_seq', 5, true);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add exercise	1	add_exercise
+2	Can change exercise	1	change_exercise
+3	Can delete exercise	1	delete_exercise
+4	Can add journal	2	add_journal
+5	Can change journal	2	change_journal
+6	Can delete journal	2	delete_journal
+7	Can add sets	3	add_sets
+8	Can change sets	3	change_sets
+9	Can delete sets	3	delete_sets
+10	Can add workout	4	add_workout
+11	Can change workout	4	change_workout
+12	Can delete workout	4	delete_workout
+13	Can add log entry	5	add_logentry
+14	Can change log entry	5	change_logentry
+15	Can delete log entry	5	delete_logentry
+16	Can add permission	6	add_permission
+17	Can change permission	6	change_permission
+18	Can delete permission	6	delete_permission
+19	Can add group	7	add_group
+20	Can change group	7	change_group
+21	Can delete group	7	delete_group
+22	Can add user	8	add_user
+23	Can change user	8	change_user
+24	Can delete user	8	delete_user
+25	Can add content type	9	add_contenttype
+26	Can change content type	9	change_contenttype
+27	Can delete content type	9	delete_contenttype
+28	Can add session	10	add_session
+29	Can change session	10	change_session
+30	Can delete session	10	delete_session
+31	Can add program	11	add_program
+32	Can change program	11	change_program
+33	Can delete program	11	delete_program
+34	Can add routine	11	add_routine
+35	Can change routine	11	change_routine
+36	Can delete routine	11	delete_routine
+37	Can add Token	12	add_token
+38	Can change Token	12	change_token
+39	Can delete Token	12	delete_token
+\.
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 39, true);
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+1	pbkdf2_sha256$36000$R8RWfOL27LhC$1WrxtJI7EJLci50LEd5v+ghof2+y1cVCJ8rCAHNGSuY=	\N	f					f	t	2017-09-05 21:29:48.3125-04
+2	pbkdf2_sha256$36000$sTeaozODopql$uKbVRmwAkeHlmASB5NrVr2bbuCIYwFXF8t6tcTlWqu4=	\N	f	test				f	t	2017-09-05 21:35:43.543945-04
+3	pbkdf2_sha256$36000$xRzkc587nWgJ$u2Gu3UHrdBAJB2ge32IqhbDndDeZwzeUOVKTu8aegt0=	\N	f	testing				f	t	2017-09-05 21:42:54.583007-04
+4	pbkdf2_sha256$36000$6gRqqleLi1KQ$mGXp+RoOwAwD5p8t2GLrJ41mzxiY5n4q4Y65mFr6s3c=	\N	f	testing1234				f	t	2017-09-05 21:48:39.722656-04
+5	pbkdf2_sha256$36000$qus92tyWEXEL$6vkCq/M6gLjPekiSHT6QjMeRB87DANNvXjvcU7O/oO0=	\N	f	testing12345				f	t	2017-09-05 21:49:00.508789-04
+6	pbkdf2_sha256$36000$5sAFMJQ8U1s5$bNMoohRw/GDrBQIwZQjE5MWTwbiQ1YF9OzdVo2wp8rE=	2017-09-05 22:34:08.600585-04	f	testuser				f	t	2017-09-05 21:49:27.407226-04
+7	pbkdf2_sha256$36000$v3sQTAtvTdcA$hCdKPUjAIWfZJWJDa/nofIgDWUUWT/9O+Ns3KhrPUwM=	\N	f	abctester				f	t	2017-09-06 12:50:52.544921-04
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 7, true);
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: authtoken_token; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY authtoken_token (key, created, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+\.
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 1, false);
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY django_content_type (id, app_label, model) FROM stdin;
+1	api	exercise
+2	api	journal
+3	api	sets
+4	api	workout
+5	admin	logentry
+6	auth	permission
+7	auth	group
+8	auth	user
+9	contenttypes	contenttype
+10	sessions	session
+11	api	routine
+12	authtoken	token
+\.
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 12, true);
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2017-08-22 21:37:50.078125-04
+2	auth	0001_initial	2017-08-22 21:37:51.597656-04
+3	admin	0001_initial	2017-08-22 21:37:52.02246-04
+4	admin	0002_logentry_remove_auto_add	2017-08-22 21:37:52.037109-04
+5	api	0001_initial	2017-08-22 21:37:52.930664-04
+6	contenttypes	0002_remove_content_type_name	2017-08-22 21:37:52.986328-04
+7	auth	0002_alter_permission_name_max_length	2017-08-22 21:37:53.017578-04
+8	auth	0003_alter_user_email_max_length	2017-08-22 21:37:53.039062-04
+9	auth	0004_alter_user_username_opts	2017-08-22 21:37:53.057617-04
+10	auth	0005_alter_user_last_login_null	2017-08-22 21:37:53.077148-04
+11	auth	0006_require_contenttypes_0002	2017-08-22 21:37:53.094726-04
+12	auth	0007_alter_validators_add_error_messages	2017-08-22 21:37:53.136718-04
+13	auth	0008_alter_user_username_max_length	2017-08-22 21:37:53.49121-04
+14	sessions	0001_initial	2017-08-22 21:37:53.922851-04
+15	api	0002_auto_20170822_2236	2017-08-23 22:04:47.810546-04
+16	api	0003_auto_20170823_2158	2017-08-23 22:04:47.871093-04
+17	api	0004_auto_20170823_2204	2017-08-23 22:04:48.255859-04
+18	api	0005_auto_20170823_2316	2017-08-23 23:16:44.821289-04
+19	api	0006_program_author	2017-08-23 23:26:05.750976-04
+20	api	0007_auto_20170825_1606	2017-08-25 16:06:24.175781-04
+21	api	0008_auto_20170905_2353	2017-09-05 23:54:32.570312-04
+22	authtoken	0001_initial	2017-09-05 23:54:33.349609-04
+23	authtoken	0002_auto_20160226_1747	2017-09-05 23:54:33.768554-04
+24	api	0009_auto_20170907_0031	2017-09-07 00:31:16.699218-04
+\.
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: hansonyu
+--
+
+SELECT pg_catalog.setval('django_migrations_id_seq', 24, true);
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: hansonyu
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+7vba484tby6entxqqc1ueq6dfqhs5zag	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:05:39.168945-04
+mnahvizuqutyf43ld5qj9kcpqh6v93nh	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:12:10.814453-04
+0mpetkvkotgxgt2vlzhxje4bkpdjvr4j	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:14:14.282226-04
+iqrxwtt4ktwm2biofk07fba5fblz3tyf	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:16:39.93164-04
+f7kfh9og6y5g22kf1gpemdnsobs41ac8	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:19:31.841796-04
+tkwd831d9deidbq6a3h4e6i1zznnvjir	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:20:50.052734-04
+ihm7xk0t8z8ijy14arhxqcrp903tr3zk	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:21:12.607421-04
+8951uw420vgxb80wmov6ug6tiyx02nxt	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:22:02.896484-04
+yj9wkukg1959schhinlp3ebhi612m957	M2M2NzZiMjAyZDhlNjY4MGE5YTQwOTFhMjllNTc3ODRmOWI2ZDllYjp7Il9hdXRoX3VzZXJfaWQiOiI2IiwiX2F1dGhfdXNlcl9iYWNrZW5kIjoiZGphbmdvLmNvbnRyaWIuYXV0aC5iYWNrZW5kcy5Nb2RlbEJhY2tlbmQiLCJfYXV0aF91c2VyX2hhc2giOiIxODYwMTFlMjkzMjIxYjc3Zjc2ZTA2NGI0ZGE0NzE0YTg1NTM5N2E1IiwidXNlcm5hbWUiOiJ0ZXN0dXNlciJ9	2017-09-19 22:34:08.624023-04
+\.
+
+
+--
+-- Name: api_exercise api_exercise_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_exercise
+    ADD CONSTRAINT api_exercise_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_journal_exercises api_journal_exercises_journal_id_sets_id_9585e661_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal_exercises
+    ADD CONSTRAINT api_journal_exercises_journal_id_sets_id_9585e661_uniq UNIQUE (journal_id, sets_id);
+
+
+--
+-- Name: api_journal_exercises api_journal_exercises_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal_exercises
+    ADD CONSTRAINT api_journal_exercises_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_journal api_journal_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal
+    ADD CONSTRAINT api_journal_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_routine api_program_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine
+    ADD CONSTRAINT api_program_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_routine_workouts api_program_workouts_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine_workouts
+    ADD CONSTRAINT api_program_workouts_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_routine_workouts api_program_workouts_program_id_workout_id_9e4ffb1c_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine_workouts
+    ADD CONSTRAINT api_program_workouts_program_id_workout_id_9e4ffb1c_uniq UNIQUE (routine_id, workout_id);
+
+
+--
+-- Name: api_sets api_sets_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_sets
+    ADD CONSTRAINT api_sets_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_workout_exercises api_workout_exercises_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout_exercises
+    ADD CONSTRAINT api_workout_exercises_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: api_workout_exercises api_workout_exercises_workout_id_exercise_id_13d1bf97_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout_exercises
+    ADD CONSTRAINT api_workout_exercises_workout_id_exercise_id_13d1bf97_uniq UNIQUE (workout_id, exercise_id);
+
+
+--
+-- Name: api_workout api_workout_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout
+    ADD CONSTRAINT api_workout_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_permission_id_0cd325b0_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_0cd325b0_uniq UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_codename_01ab375a_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_01ab375a_uniq UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_group_id_94350c0c_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_94350c0c_uniq UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_permission_id_14a6b632_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_14a6b632_uniq UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: authtoken_token authtoken_token_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY authtoken_token
+    ADD CONSTRAINT authtoken_token_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: authtoken_token authtoken_token_user_id_key; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY authtoken_token
+    ADD CONSTRAINT authtoken_token_user_id_key UNIQUE (user_id);
+
+
+--
+-- Name: django_admin_log django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type django_content_type_app_label_model_76bd3d3b_uniq; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_76bd3d3b_uniq UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: api_exercise_author_id_839cb9dc; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_exercise_author_id_839cb9dc ON api_exercise USING btree (author_id);
+
+
+--
+-- Name: api_journal_author_id_30b87c6e; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_journal_author_id_30b87c6e ON api_journal USING btree (author_id);
+
+
+--
+-- Name: api_journal_exercises_journal_id_b985b473; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_journal_exercises_journal_id_b985b473 ON api_journal_exercises USING btree (journal_id);
+
+
+--
+-- Name: api_journal_exercises_sets_id_cb5714da; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_journal_exercises_sets_id_cb5714da ON api_journal_exercises USING btree (sets_id);
+
+
+--
+-- Name: api_program_author_id_053b3aa7; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_program_author_id_053b3aa7 ON api_routine USING btree (author_id);
+
+
+--
+-- Name: api_program_workouts_program_id_55647624; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_program_workouts_program_id_55647624 ON api_routine_workouts USING btree (routine_id);
+
+
+--
+-- Name: api_program_workouts_workout_id_6191d1b0; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_program_workouts_workout_id_6191d1b0 ON api_routine_workouts USING btree (workout_id);
+
+
+--
+-- Name: api_sets_exercise_id_d2153aa9; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_sets_exercise_id_d2153aa9 ON api_sets USING btree (exercise_id);
+
+
+--
+-- Name: api_workout_exercises_exercise_id_61312c40; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_workout_exercises_exercise_id_61312c40 ON api_workout_exercises USING btree (exercise_id);
+
+
+--
+-- Name: api_workout_exercises_workout_id_54ca0364; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX api_workout_exercises_workout_id_54ca0364 ON api_workout_exercises USING btree (workout_id);
+
+
+--
+-- Name: auth_group_name_a6ea08ec_like; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_group_name_a6ea08ec_like ON auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id_b120cbf9; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_group_permissions_group_id_b120cbf9 ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id_84c5c92e; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_group_permissions_permission_id_84c5c92e ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id_2f476e4b; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_permission_content_type_id_2f476e4b ON auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id_97559544; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_user_groups_group_id_97559544 ON auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id_6a12ed8b; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_user_groups_user_id_6a12ed8b ON auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_1fbb5f2c; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id_1fbb5f2c ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_a95ead1b; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_user_user_permissions_user_id_a95ead1b ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_6821ab7c_like; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX auth_user_username_6821ab7c_like ON auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: authtoken_token_key_10f0b77e_like; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX authtoken_token_key_10f0b77e_like ON authtoken_token USING btree (key varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id_c4bce8eb; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX django_admin_log_content_type_id_c4bce8eb ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id_c564eba6; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX django_admin_log_user_id_c564eba6 ON django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date_a5c62663; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX django_session_expire_date_a5c62663 ON django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_c0390e0f_like; Type: INDEX; Schema: public; Owner: hansonyu
+--
+
+CREATE INDEX django_session_session_key_c0390e0f_like ON django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: api_exercise api_exercise_author_id_839cb9dc_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_exercise
+    ADD CONSTRAINT api_exercise_author_id_839cb9dc_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_journal api_journal_author_id_30b87c6e_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal
+    ADD CONSTRAINT api_journal_author_id_30b87c6e_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_journal_exercises api_journal_exercises_journal_id_b985b473_fk_api_journal_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal_exercises
+    ADD CONSTRAINT api_journal_exercises_journal_id_b985b473_fk_api_journal_id FOREIGN KEY (journal_id) REFERENCES api_journal(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_journal_exercises api_journal_exercises_sets_id_cb5714da_fk_api_sets_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_journal_exercises
+    ADD CONSTRAINT api_journal_exercises_sets_id_cb5714da_fk_api_sets_id FOREIGN KEY (sets_id) REFERENCES api_sets(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_routine api_program_author_id_053b3aa7_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine
+    ADD CONSTRAINT api_program_author_id_053b3aa7_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_routine_workouts api_program_workouts_workout_id_6191d1b0_fk_api_workout_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine_workouts
+    ADD CONSTRAINT api_program_workouts_workout_id_6191d1b0_fk_api_workout_id FOREIGN KEY (workout_id) REFERENCES api_workout(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_routine_workouts api_routine_workouts_routine_id_f0737d28_fk_api_routine_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_routine_workouts
+    ADD CONSTRAINT api_routine_workouts_routine_id_f0737d28_fk_api_routine_id FOREIGN KEY (routine_id) REFERENCES api_routine(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_sets api_sets_exercise_id_d2153aa9_fk_api_exercise_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_sets
+    ADD CONSTRAINT api_sets_exercise_id_d2153aa9_fk_api_exercise_id FOREIGN KEY (exercise_id) REFERENCES api_exercise(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_workout_exercises api_workout_exercises_exercise_id_61312c40_fk_api_exercise_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout_exercises
+    ADD CONSTRAINT api_workout_exercises_exercise_id_61312c40_fk_api_exercise_id FOREIGN KEY (exercise_id) REFERENCES api_exercise(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: api_workout_exercises api_workout_exercises_workout_id_54ca0364_fk_api_workout_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY api_workout_exercises
+    ADD CONSTRAINT api_workout_exercises_workout_id_54ca0364_fk_api_workout_id FOREIGN KEY (workout_id) REFERENCES api_workout(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissio_permission_id_84c5c92e_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissio_permission_id_84c5c92e_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions auth_group_permissions_group_id_b120cbf9_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_b120cbf9_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_permission auth_permission_content_type_id_2f476e4b_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_2f476e4b_fk_django_co FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_group_id_97559544_fk_auth_group_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_97559544_fk_auth_group_id FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups auth_user_groups_user_id_6a12ed8b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_6a12ed8b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: authtoken_token authtoken_token_user_id_35299eff_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY authtoken_token
+    ADD CONSTRAINT authtoken_token_user_id_35299eff_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_content_type_id_c4bce8eb_fk_django_co; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_content_type_id_c4bce8eb_fk_django_co FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: django_admin_log django_admin_log_user_id_c564eba6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: hansonyu
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_user_id_c564eba6_fk_auth_user_id FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

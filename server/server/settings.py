@@ -99,11 +99,11 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fitJournal',
+        'NAME': 'fitjournal',
         'USER': 'hansonyu',
         'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': ''
+        'HOST': 'aa1bpe3qoyy5u99.cicvjd3c57b8.us-east-1.rds.amazonaws.com',
+        'PORT': '5432'
     }
 }
 

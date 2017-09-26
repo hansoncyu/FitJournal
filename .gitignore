@@ -2,6 +2,8 @@
 migrations
 **/management
 /FitJournal
+settings.py
+
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
