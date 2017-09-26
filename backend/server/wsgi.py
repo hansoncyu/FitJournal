@@ -10,8 +10,9 @@ https://docs.djangoproject.com/en/1.11/howto/deployment/wsgi/
 import os
 import sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(BASE_DIR)
+FILE_PATH = os.path.abspath(__file__)
+sys.path.append(os.path.dirname(os.path.dirname(FILE_PATH)))
+sys.path.append(os.path.dirname(FILE_PATH))
 
 from django.core.wsgi import get_wsgi_application
 
