@@ -12,6 +12,7 @@ from rest_framework.renderers import JSONRenderer
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 import pytz
+import os
 
 def exercises(request):
     if request.method == 'GET':
@@ -429,6 +430,18 @@ def logoutRoute(request):
         }
         return JsonResponse(success)
 
+    else:
+        error = {'error': 'Invalid HTTP request'}
+        return JsonResponse(error, status=400)
+    
+def serveStatic(request):
+    if request.method == 'GET':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        try:
+            with open(os.path.join(os.path.dirname(BASE_DIR), 'client', 'fitjournal', 'build', 'index.html')) as file:
+                return HttpResponse(file.read())
+        except:
+            return HttpResponse('index.html not found', status=501)
     else:
         error = {'error': 'Invalid HTTP request'}
         return JsonResponse(error, status=400)
