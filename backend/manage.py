@@ -6,7 +6,7 @@ if __name__ == "__main__":
     FILE_PATH = os.path.abspath(__file__)
     sys.path.append(os.path.dirname(FILE_PATH))
     sys.path.append(os.path.join(os.path.dirname(FILE_PATH), 'server'))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "server.server.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
