@@ -1,8 +1,8 @@
 **/node_modules
 migrations
 **/management
-.ebextensions/*
-.idea/*
+.ebextensions/
+.idea/
 /FitJournal
 settings.py
 
