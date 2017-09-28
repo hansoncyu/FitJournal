@@ -1,6 +1,6 @@
 import store from '../store.js';
 
-const testServerURL = 'https://FitJournal-dev.us-east-1.elasticbeanstalk.com';
+const testServerURL = 'http://FitJournal-dev.us-east-1.elasticbeanstalk.com';
 var token;
 store.subscribe(() => token = 'JWT ' + store.getState().user.token);
 

@@ -1,6 +1,6 @@
 import store from '../store.js';
 
-const testServerURL = 'https://FitJournal-dev.us-east-1.elasticbeanstalk.com';
+const testServerURL = 'http://FitJournal-dev.us-east-1.elasticbeanstalk.com';
 var token;
 store.subscribe(() => token = 'JWT ' + store.getState().user.token);
 
@@ -26,7 +26,7 @@ export function fetchToken(username, password, router) {
       .then(res => {
         localStorage.setItem('fitjournalToken', res.token);
         localStorage.setItem('fitjournalUsername', username);
-        router.push('/journal')
+        router.push('/journal');
         dispatch({type:'SET_USER', payload: {username: username, token: res.token}});
       })
       .catch(err => {

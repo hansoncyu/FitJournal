@@ -1,6 +1,6 @@
 import store from '../store.js';
 
-const testServerURL = 'https://FitJournal-dev.us-east-1.elasticbeanstalk.com';
+const testServerURL = 'http://FitJournal-dev.us-east-1.elasticbeanstalk.com';
 var token;
 store.subscribe(() => token = 'JWT ' + store.getState().user.token);
 
@@ -20,7 +20,6 @@ export function fetchJournal(date) {
     fetch(fetchURL, payload)
       .then(res => handleErrors(res))
       .then(res => {
-        console.log(res);
         dispatch({type: 'NEW_JOURNAL', payload: res});
       })
       .catch(err => {
